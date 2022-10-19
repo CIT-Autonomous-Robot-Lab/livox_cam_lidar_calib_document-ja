@@ -64,6 +64,7 @@ source devel/setup.bash
 </div>
 
 ### 2-2 カメラキャリブレーション  
+MATLABを使用する方法か、本パッケージを用いた方法のいずれかを行ってください。
 #### 2-2-1 MATLABキャリブレーション
 MATLABのツール「cameraCalibrator」を使用してキャリブレーションできます。「RadialDistortion」「TangentialDistortion」「K」のパラメータが必要です。
 #### 2-2-2 ROSキャリブレーション
@@ -72,3 +73,5 @@ cameraCalib.launchのパラメータを設定してください。デフォル�
 ```
 roslaunch camera_lidar_calibration cameraCalib.launch
 ```
+キャリブレーション結果はデフォルトではdata/camera/result.txtに保存されます
+## 3. カメラとLiDARデータの準備
