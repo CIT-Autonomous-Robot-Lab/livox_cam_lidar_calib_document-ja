@@ -69,9 +69,71 @@ MATLABを使用する方法か、本パッケージを用いた方法のいず�
 MATLABのツール「cameraCalibrator」を使用してキャリブレーションできます。「RadialDistortion」「TangentialDistortion」「K」のパラメータが必要です。
 #### 2-2-2 ROSキャリブレーション
 パッケージ内のノードを使用してキャリブレーションできます。
-cameraCalib.launchのパラメータを設定してください。デフォルトではdata/camera/photo内の写真と、data/camera/in.txt内の写真名を参照します。「row_number」と「col_number」は実際の数値から1引いたものを設定するとうまく動作する気がします。
+cameraCalib.launchのパラメータを設定してください。デフォルトではdata/camera/photo内の写真と、data/camera/in.txt内の写真名を参照します。「row_number」と「col_number」は実際の数値から1引いたものを設定するとうまく動作する気がします。また写真名を書き込む際には、以下のシェルスクリプトが有効です。  
+```
+#! /bin/bash
+
+rm in.txt && touch in.txt
+
+for ((i=0; i<=31; i++))
+do
+        echo -e "$i.png" >> in.txt
+done
+```
 ```
 roslaunch camera_lidar_calibration cameraCalib.launch
 ```
-キャリブレーション結果はデフォルトではdata/camera/result.txtに保存されます
+キャリブレーション結果はデフォルトではdata/camera/result.txtに保存されます。また、得られたパラメータはdata/parameters/intrinsic.txtに書き込んでください。
+<div align="center">
+<img src="https://github.com/YuwaAoki/livox_camera_lidar_calibration/blob/master/doc_resources/intrinsic_format.png">
+</div>
+
 ## 3. カメラとLiDARデータの準備
+### 3-1 キャリブレーションシーンの準備
+キャリブレーションを行うシーンを準備します。ターゲットポイントを選択するため開けた環境と、写真と点群で目印になるものを用意してください。このステップでもLiDARとカメラを目印から3m話してください。  
+<div align="center">
+<img src="https://github.com/YuwaAoki/livox_camera_lidar_calibration/blob/master/doc_resources/board.png">
+</div>  
+<div align=center>さまざまな角度に配置することが推奨されています。</div>  
+
+### 3-2 LiDARデータの記録  
+キャリブレーションボードの点群が表示されているかをコマンドで確認します。  
+```
+roslaunch livox_ros_driver livox_lidar_rviz.launch
+```
+rosbag記録時はこちらのコマンドを使用します。
+```
+roslaunch livox_ros_driver livox_lidar_msg.launch
+```
+[次のリンク](https://github.com/Livox-SDK/livox_ros_driver)を参照して、「customMsg」形式のデータが含まれていることを確認してください。確認できたら、カメラを準備してください。  
+### 3-3 カメラとLiDARデータの収集
+1. 写真を取る  
+2. 点群を記録
+```
+rosbag record /livox/lidar
+```
+3. データごとに写真とrosbagを10秒記録します。
+4. すべてのデータを収集したら、写真をdata/photo、rosbagをdata/lidarに移動させます。
+
+## 4. 校正データ取得
+### 4-1 写真の座標の取得
+起動ファイルを実行します。
+```
+roslaunch camera_lidar_calibration cornerPhoto.launch
+```
+写真が表示されたら、写真上でターゲットポイントを選択します。通常キャリブレーションボードの左上隅から反時計回りに選択します。ポイントを4つ選択したら、最後に適当なポイントを選択して完了です。データはdata/corner_photo.txtに保存されます。座標を記録し直す場合は、ファイルの中身を消去してからやり直してください。
+### 4-2 LiDARデータの記録
+rosbagをpcdファイルに変換します。pcdTransfer.launchでrosbagの名前と数を設定してください。
+```
+roslaunch camera_lidar_calibration pcdTransfer.launch
+```
+pcdファイルを開き、写真と同じ順序でポイントを選択します。
+```
+cd data/pcdFiles
+pcl_viewer -use_point_picking xx.pcd
+```
+座標はdata/corner_lidar.txtに書き込んでください。  
+<div align="center">
+<img src="https://github.com/YuwaAoki/livox_camera_lidar_calibration/blob/master/doc_resources/corner_lidar.png">
+</div>  
+
