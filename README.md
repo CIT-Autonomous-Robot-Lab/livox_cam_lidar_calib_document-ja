@@ -134,18 +134,27 @@ rosbag record /livox/lidar
 ```
 roslaunch camera_lidar_calibration cornerPhoto.launch
 ```
-写真が表示されたら、写真上でターゲットポイントを選択します。通常キャリブレーションボードの左上隅から反時計回りに選択します。ポイントを4つ選択したら、最後に適当なポイントを選択して完了です。データはdata/corner_photo.txtに保存されます。座標を記録し直す場合は、corner_photo.txtの中身を消去してからやり直してください。
+写真が表示されたら、写真上でターゲットポイントを選択します。通常キャリブレーションボードの左上隅から反時計回りに選択します。ポイントを4つ選択したら、最後に適当なポイントを選択して完了です。データはdata/corner_photo.txtに保存されます。座標を記録し直す場合は、corner_photo.txtの中身を消去してからやり直してください。  
+<div align="center">
+<img src="https://github.com/CIT-Autonomous-Robot-Lab/livox_cam_lidar_calib_document-ja/blob/master/doc_resouces/corner_photo.png">
+</div>   
+
 ### 4-2 点群の座標の取得
 rosbagをpcdファイルに変換します。pcdTransfer.launchでrosbagの名前と数を設定してください。
 ```
 roslaunch camera_lidar_calibration pcdTransfer.launch
 ```
-pcdファイルを開き、写真と同じ順序でポイントを選択します。
+pcdファイルを開き、写真と同じ順序でポイントを選択します。shift+左クリックでポイントを選択できます。
 ```
 cd data/pcdFiles
 pcl_viewer -use_point_picking xx.pcd
 ```
+<div align="center">
+<img src="https://github.com/CIT-Autonomous-Robot-Lab/livox_cam_lidar_calib_document-ja/blob/master/doc_resouces/corner_lidar.png">
+</div>   
+
 座標はdata/corner_lidar.txtに書き込んでください。  
+
 <div align="center">
 <img src="https://github.com/YuwaAoki/livox_camera_lidar_calibration/blob/master/doc_resources/corner_lidar.png">
 </div>  
