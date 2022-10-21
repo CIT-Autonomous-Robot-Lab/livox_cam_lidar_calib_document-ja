@@ -52,7 +52,7 @@ open-cvのバージョンが4.0以降の場合、以下を使用してくださ�
 cd src
 git clone https://github.com/kaanoguzhan/livox_camera_lidar_calibration.git
 cd ..
-catkin build
+catkin_make
 source devel/setup.bash
 ```
 
