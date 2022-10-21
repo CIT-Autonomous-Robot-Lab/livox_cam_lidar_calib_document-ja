@@ -46,7 +46,8 @@ cd ..
 catkin build
 source devel/setup.bash
 ```
-open-cvのバージョンが4.0以降の場合、以下を使用してください。
+open-cvのバージョンが4.0以降の場合、以下を使用してください。  
+本ドキュメントでは、この以下に記載されているパッケージを使用した場合の手順について説明します。
 ```
 cd src
 git clone https://github.com/kaanoguzhan/livox_camera_lidar_calibration.git
@@ -137,3 +138,16 @@ pcl_viewer -use_point_picking xx.pcd
 <img src="https://github.com/YuwaAoki/livox_camera_lidar_calibration/blob/master/doc_resources/corner_lidar.png">
 </div>  
 
+## 5. 外部パラメータ取得
+以下のコマンドを実行して、外部パラメータを計算します。
+```
+roslaunch camera_lidar_calibration getExt1.launch
+```
+結果はdata/parameters/extrinsic.txtに保存されます。  
+誤差が大きいデータは端末に出力されます。
+
+## 6. 結果の検証
+colorLidar.launchファイルにrosbagと写真のパスを設定し、コマンドを実行してrvizで確認します。
+```
+roslaunch camera_lidar_calibration colorLidar.launch
+```
