@@ -47,7 +47,7 @@ catkin build
 source devel/setup.bash
 ```
 open-cvのバージョンが4.0以降の場合、以下を使用してください。  
-本ドキュメントでは、この以下に記載されているパッケージを使用した場合の手順について説明します。
+本ドキュメントでは、こちらのパッケージを使用した場合の手順について説明します。
 ```
 cd src
 git clone https://github.com/kaanoguzhan/livox_camera_lidar_calibration.git
@@ -59,15 +59,23 @@ source devel/setup.bash
 ## 2. カメラの内部パラメータのキャリブレーション
 ### 2-1 準備
 以下のキャリブレーションボードを印刷し、厚紙などに貼り付けてください。  
-また、カメラの視野とLiDARの視野を一致させてください。その後、キャリブレーションボードの写真を撮影してください。少なくとも20枚の写真が必要です。
+その後、キャリブレーションボードの写真を撮影してください。少なくとも20枚の写真が必要です。
 <div align="center">
 <img src="https://github.com/YuwaAoki/livox_camera_lidar_calibration/blob/master/doc_resources/chess_board.png">
 </div>
 
+<div align="center">
+<img src="https://github.com/CIT-Autonomous-Robot-Lab/livox_cam_lidar_calib_document-ja/blob/master/doc_resouces/calibphotoc.png">
+</div>
+
 ### 2-2 カメラキャリブレーション  
-MATLABを使用する方法か、本パッケージを用いた方法のいずれかを行ってください。
+MATLABを使用する方法か、このパッケージを用いた方法のいずれかを行ってください。
 #### 2-2-1 MATLABキャリブレーション
 MATLABのツール「cameraCalibrator」を使用してキャリブレーションできます。「RadialDistortion」「TangentialDistortion」「K」のパラメータが必要です。
+<div align="center">
+<img src="https://github.com/CIT-Autonomous-Robot-Lab/livox_cam_lidar_calib_document-ja/blob/master/doc_resouces/matcalib.png">
+</div>
+
 #### 2-2-2 ROSキャリブレーション
 パッケージ内のノードを使用してキャリブレーションできます。
 cameraCalib.launchのパラメータを設定してください。デフォルトではdata/camera/photo内の写真と、data/camera/in.txt内の写真名を参照します。「row_number」と「col_number」は実際の数値から1引いたものを設定するとうまく動作する気がします。また写真名を書き込む際には、以下のシェルスクリプトが有効です。  
@@ -84,7 +92,11 @@ done
 ```
 roslaunch camera_lidar_calibration cameraCalib.launch
 ```
-キャリブレーション結果はデフォルトではdata/camera/result.txtに保存されます。また、得られたパラメータはdata/parameters/intrinsic.txtに書き込んでください。
+キャリブレーション結果はデフォルトではdata/camera/result.txtに保存されます。
+
+### 2-3 パラメータの保存
+得られたパラメータは次の形式でdata/parameters/intrinsic.txtに書き込んでください。distortionの数値のうち、左の２つがRadialDistortionで、右の３つがTangentialDistortionです。
+
 <div align="center">
 <img src="https://github.com/YuwaAoki/livox_camera_lidar_calibration/blob/master/doc_resources/intrinsic_format.png">
 </div>
@@ -151,3 +163,6 @@ colorLidar.launchファイルにrosbagと写真のパスを設定し、コマン
 ```
 roslaunch camera_lidar_calibration colorLidar.launch
 ```
+<div align="center">
+<img src="https://github.com/CIT-Autonomous-Robot-Lab/livox_cam_lidar_calib_document-ja/blob/master/doc_resouces/colorlidar.png">
+</div>
