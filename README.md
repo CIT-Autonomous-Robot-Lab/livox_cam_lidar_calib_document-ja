@@ -78,7 +78,11 @@ MATLABのツール「cameraCalibrator」を使用してキャリブレーショ�
 
 #### 2-2-2 ROSキャリブレーション
 パッケージ内のノードを使用してキャリブレーションできます。
-cameraCalib.launchのパラメータを設定してください。デフォルトではdata/camera/photo内の写真と、data/camera/in.txt内の写真名を参照します。「row_number」と「col_number」は実際の数値から1引いたものを設定するとうまく動作する気がします。また写真名を書き込む際には、以下のシェルスクリプトが有効です。  
+txtファイルに使用する写真の名前を保存してください。写真名を書き込む際には、以下のシェルスクリプトが有効です。  
+<div align="center">
+<img src="https://github.com/CIT-Autonomous-Robot-Lab/livox_cam_lidar_calib_document-ja/blob/master/doc_resouces/intxt.png">
+</div>
+
 ```
 #! /bin/bash
 
@@ -89,13 +93,14 @@ do
         echo -e "$i.png" >> in.txt
 done
 ```
+camera_in_pathで写真の名前が書き込まれたファイル、camera_folder_pathで写真が保存された場所、result_pathで結果を保存するファイル、row_numberでキャリブレーションボードの行数、col_numberで列数、widthとheightでグリッドの幅と高さを指定してください。  
+「row_number」と「col_number」は実際の数値から1引いたものを設定するとうまく動作する気がします。  
 ```
-roslaunch camera_lidar_calibration cameraCalib.launch
+roslaunch camera_lidar_calibration cameraCalib.launch camera_in_path:="$(rospack find camera_lidar_calibration)/../../data/camera/in.txt" camera_folder_path:="$(rospack find camera_lidar_calibration)/../../data/camera/photos/" result_path:="$(rospack find camera_lidar_calibration)/../../data/camera/result.txt" row_number:="9" col_number:="6" width:="20" height:="20"
 ```
-キャリブレーション結果はデフォルトではdata/camera/result.txtに保存されます。
 
 ### 2-3 パラメータの保存
-得られたパラメータは次の形式でdata/parameters/intrinsic.txtに書き込んでください。distortionの数値のうち、左の２つがRadialDistortionで、右の３つがTangentialDistortionです。
+得られたパラメータは次の形式でtxtファイルに書き込んでください。distortionの数値のうち、左の２つがRadialDistortionで、右の３つがTangentialDistortionです。
 
 <div align="center">
 <img src="https://github.com/YuwaAoki/livox_camera_lidar_calibration/blob/master/doc_resources/intrinsic_format.png">
@@ -103,7 +108,7 @@ roslaunch camera_lidar_calibration cameraCalib.launch
 
 ## 3. カメラとLiDARデータの準備
 ### 3-1 キャリブレーションシーンの準備
-キャリブレーションを行うシーンを準備します。ターゲットポイントを選択するため開けた環境と、写真と点群で目印になるものを用意してください。このステップでもLiDARとカメラを目印から3m話してください。以下の写真は千葉工業大学2号館3階で撮影されたものです。　　
+キャリブレーションを行うシーンを準備します。ターゲットポイントを選択するため開けた環境と、写真と点群で目印になるものを用意してください。このステップでもLiDARとカメラを目印から3m離してください。以下の写真は千葉工業大学津田沼キャンパス2号館3階で撮影されたものです。　　
 <div align="center">
 <img src="https://github.com/CIT-Autonomous-Robot-Lab/livox_cam_lidar_calib_document-ja/blob/master/doc_resouces/calibscene.png">
 </div>   
@@ -126,51 +131,48 @@ roslaunch livox_ros_driver livox_lidar_msg.launch
 rosbag record /livox/lidar
 ```
 3. データごとに写真とrosbagを10秒記録します。
-4. すべてのデータを収集したら、写真をdata/photo、rosbagをdata/lidarに移動させます。
 
 ## 4. 校正データ取得
 ### 4-1 写真の座標の取得
-起動ファイルを実行します。
+起動ファイルを実行します。intrinsic_pathでカメラのパラメータを保存したファイル、input_photo_folder_pathで使用する写真の場所、output_pathで結果を保存するファイルを指定してください。
 ```
-roslaunch camera_lidar_calibration cornerPhoto.launch
+roslaunch camera_lidar_calibration cornerPhoto.launch　intrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/intrinsic.txt" input_photo_folder_path:="$(rospack find camera_lidar_calibration)/../../data/photo" output_path:="$(rospack find camera_lidar_calibration)/../../data/corner_photo.txt"
 ```
-写真が表示されたら、写真上でターゲットポイントを選択します。通常キャリブレーションボードの左上隅から反時計回りに選択します。ポイントを4つ選択したら、最後に適当なポイントを選択して完了です。データはdata/corner_photo.txtに保存されます。座標を記録し直す場合は、corner_photo.txtの中身を消去してからやり直してください。  
+写真が表示されたら、写真上でターゲットポイントを選択します。通常キャリブレーションボードの左上隅から反時計回りに選択します。ポイントを4つ選択したら、最後に適当なポイントを選択して完了です。座標を記録し直す場合は、保存した座標を消去してからやり直してください。  
 <div align="center">
 <img src="https://github.com/CIT-Autonomous-Robot-Lab/livox_cam_lidar_calib_document-ja/blob/master/doc_resouces/corner_photo.png">
 </div>   
 
 ### 4-2 点群の座標の取得
-rosbagをpcdファイルに変換します。pcdTransfer.launchでrosbagの名前と数を設定してください。
+rosbagをpcdファイルに変換します。input_bag_pathでrosbagが保存された場所、output_pcd_pathでpcdファイルを保存する場所、data_numでrosbagファイルの数を指定してください。
 ```
-roslaunch camera_lidar_calibration pcdTransfer.launch
+roslaunch camera_lidar_calibration pcdTransfer.launch input_bag_path:="$(rospack find camera_lidar_calibration)/../../data/lidar/" output_pcd_path":="$(rospack find camera_lidar_calibration)/../../data/pcdFiles/" data_num:="1" 
 ```
 pcdファイルを開き、写真と同じ順序でポイントを選択します。shift+左クリックでポイントを選択できます。
 ```
-cd data/pcdFiles
 pcl_viewer -use_point_picking xx.pcd
 ```
 <div align="center">
 <img src="https://github.com/CIT-Autonomous-Robot-Lab/livox_cam_lidar_calib_document-ja/blob/master/doc_resouces/corner_lidar.png">
 </div>   
 
-座標はdata/corner_lidar.txtに書き込んでください。  
+取得した座標はtxtファイルに書き込んでください。  
 
 <div align="center">
 <img src="https://github.com/YuwaAoki/livox_camera_lidar_calibration/blob/master/doc_resources/corner_lidar.png">
 </div>  
 
 ## 5. 外部パラメータ取得
-以下のコマンドを実行して、外部パラメータを計算します。
+以下のコマンドを実行して、外部パラメータを計算します。intrinsic_pathでカメラのパラメータを保存したファイル、extirnsic_pathで結果を保存するファイル、input_lidar_pathで点群の座標を記録したファイル、input_photo_pathでカメラの座標を記録したファイルを指定してください。
 ```
-roslaunch camera_lidar_calibration getExt1.launch
+roslaunch camera_lidar_calibration getExt1.launch intrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/intrinsic.txt extrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/extrinsic.txt input_lidar_path:="$(rospack find camera_lidar_calibration)/../../data/corner_lidar.txt" input_photo_path:="$(find camera_lidar_calibration)/../../data/corner_photo.txt" 
 ```
-結果はdata/parameters/extrinsic.txtに保存されます。  
 誤差が大きいデータは端末に出力されます。
 
 ## 6. 結果の検証
-colorLidar.launchファイルにrosbagと写真のパスを設定し、コマンドを実行してrvizで確認します。
+コマンドを実行してrvizで確認します。intrinsic_pathでカメラのパラメータを保存したファイル、extirnsic_pathで外部パラメータを保存したファイル、input_bag_pathでrosbagファイル、input_photo_pathで写真を指定してください。
 ```
-roslaunch camera_lidar_calibration colorLidar.launch
+roslaunch camera_lidar_calibration colorLidar.launch　intrinsic_path:="$(find camera_lidar_calibration)/../../data/parameters/intrinsic.txt extrinsic_path:="$(find camera_lidar_calibration)/../../data/parameters/extrinsic.txt" input_bag_path:="$(find camera_lidar_calibration)/../../data/lidar/0.bag" input_photo_path:="$(find camera_lidar_calibration)/../../data/photo/0.png"
 ```
 <div align="center">
 <img src="https://github.com/CIT-Autonomous-Robot-Lab/livox_cam_lidar_calib_document-ja/blob/master/doc_resouces/colorlidar.png">
