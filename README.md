@@ -1,3 +1,5 @@
+[![ROS-noetic-build-test](https://github.com/CIT-Autonomous-Robot-Lab/livox_camera_lidar_calibration/actions/workflows/build.yaml/badge.svg)](https://github.com/CIT-Autonomous-Robot-Lab/livox_camera_lidar_calibration/actions/workflows/build.yaml)
+
 # livox_cam_lidar_calib_document-ja
 LivoxのカメラとLiDARのキャリブレーションROSパッケージの日本語ドキュメントです。  
 画像と点群データから非リアルタイムなキャリブレーションを行います。  
