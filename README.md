@@ -138,7 +138,7 @@ rosbag record /livox/lidar
 ### 4-1 写真の座標の取得
 起動ファイルを実行します。intrinsic_pathでカメラのパラメータを保存したファイル、input_photo_folder_pathで使用する写真の場所、output_pathで結果を保存するファイルを指定してください。
 ```
-roslaunch camera_lidar_calibration cornerPhoto.launch　intrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/intrinsic.txt" input_photo_folder_path:="$(rospack find camera_lidar_calibration)/../../data/photo" output_path:="$(rospack find camera_lidar_calibration)/../../data/corner_photo.txt"
+roslaunch camera_lidar_calibration cornerPhoto.launch intrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/intrinsic.txt" input_photo_folder_path:="$(rospack find camera_lidar_calibration)/../../data/photo" output_path:="$(rospack find camera_lidar_calibration)/../../data/corner_photo.txt"
 ```
 写真が表示されたら、写真上でターゲットポイントを選択します。通常キャリブレーションボードの左上隅から反時計回りに選択します。ポイントを4つ選択したら、最後に適当なポイントを選択して完了です。座標を記録し直す場合は、保存した座標を消去してからやり直してください。  
 <div align="center">
@@ -167,7 +167,7 @@ pcl_viewer -use_point_picking xx.pcd
 ## 5. 外部パラメータ取得
 以下のコマンドを実行して、外部パラメータを計算します。intrinsic_pathでカメラのパラメータを保存したファイル、extirnsic_pathで結果を保存するファイル、input_lidar_pathで点群の座標を記録したファイル、input_photo_pathでカメラの座標を記録したファイルを指定してください。
 ```
-roslaunch camera_lidar_calibration getExt1.launch intrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/intrinsic.txt extrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/extrinsic.txt input_lidar_path:="$(rospack find camera_lidar_calibration)/../../data/corner_lidar.txt" input_photo_path:="$(rospack find camera_lidar_calibration)/../../data/corner_photo.txt" 
+roslaunch camera_lidar_calibration getExt1.launch intrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/intrinsic.txt extrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/extrinsic.txt input_lidar_path:="$(rospack find camera_lidar_calibration)/../../data/corner_lidar.txt" input_photo_path:="$(rospack find camera_lidar_calibration)/../../data/corner_photo.txt" error_threshold:="12"
 ```
 誤差が大きいデータは端末に出力されます。
 
