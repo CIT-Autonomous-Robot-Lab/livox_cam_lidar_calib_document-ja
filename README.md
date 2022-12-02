@@ -167,14 +167,14 @@ pcl_viewer -use_point_picking xx.pcd
 ## 5. 外部パラメータ取得
 以下のコマンドを実行して、外部パラメータを計算します。intrinsic_pathでカメラのパラメータを保存したファイル、extirnsic_pathで結果を保存するファイル、input_lidar_pathで点群の座標を記録したファイル、input_photo_pathでカメラの座標を記録したファイルを指定してください。
 ```
-roslaunch camera_lidar_calibration getExt1.launch intrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/intrinsic.txt extrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/extrinsic.txt input_lidar_path:="$(rospack find camera_lidar_calibration)/../../data/corner_lidar.txt" input_photo_path:="$(find camera_lidar_calibration)/../../data/corner_photo.txt" 
+roslaunch camera_lidar_calibration getExt1.launch intrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/intrinsic.txt extrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/extrinsic.txt input_lidar_path:="$(rospack find camera_lidar_calibration)/../../data/corner_lidar.txt" input_photo_path:="$(rospack find camera_lidar_calibration)/../../data/corner_photo.txt" 
 ```
 誤差が大きいデータは端末に出力されます。
 
 ## 6. 結果の検証
 コマンドを実行してrvizで確認します。intrinsic_pathでカメラのパラメータを保存したファイル、extirnsic_pathで外部パラメータを保存したファイル、input_bag_pathでrosbagファイル、input_photo_pathで写真を指定してください。
 ```
-roslaunch camera_lidar_calibration colorLidar.launch　intrinsic_path:="$(find camera_lidar_calibration)/../../data/parameters/intrinsic.txt extrinsic_path:="$(find camera_lidar_calibration)/../../data/parameters/extrinsic.txt" input_bag_path:="$(find camera_lidar_calibration)/../../data/lidar/0.bag" input_photo_path:="$(find camera_lidar_calibration)/../../data/photo/0.png"
+roslaunch camera_lidar_calibration colorLidar.launch intrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/intrinsic.txt" extrinsic_path:="$(rospack find camera_lidar_calibration)/../../data/parameters/extrinsic.txt" input_bag_path:="$(rospack find camera_lidar_calibration)/../../data/lidar/0.bag" input_photo_path:="$(rospack find camera_lidar_calibration)/../../data/photo/0.png"
 ```
 <div align="center">
 <img src="https://github.com/CIT-Autonomous-Robot-Lab/livox_cam_lidar_calib_document-ja/blob/master/doc_resouces/colorlidar.png">
