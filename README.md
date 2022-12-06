@@ -43,18 +43,9 @@ catkin_make
 ```
 # install camera/lidar calibration package
 cd src
-git clone https://github.com/Livox-SDK/livox_camera_lidar_calibration.git
+git clone https://github.com/CIT-Autonomous-Robot-Lab/livox_camera_lidar_calibration.git
 cd ..
 catkin build
-source devel/setup.bash
-```
-open-cvのバージョンが4.0以降の場合、以下を使用してください。  
-本ドキュメントでは、こちらのパッケージを使用した場合の手順について説明します。
-```
-cd src
-git clone https://github.com/kaanoguzhan/livox_camera_lidar_calibration.git
-cd ..
-catkin_make
 source devel/setup.bash
 ```
 
@@ -148,7 +139,7 @@ roslaunch camera_lidar_calibration cornerPhoto.launch intrinsic_path:="$(rospack
 ### 4-2 点群の座標の取得
 rosbagをpcdファイルに変換します。input_bag_pathでrosbagが保存された場所、output_pcd_pathでpcdファイルを保存する場所、data_numでrosbagファイルの数を指定してください。
 ```
-roslaunch camera_lidar_calibration pcdTransfer.launch input_bag_path:="$(rospack find camera_lidar_calibration)/../../data/lidar/" output_pcd_path":="$(rospack find camera_lidar_calibration)/../../data/pcdFiles/" data_num:="1" 
+roslaunch camera_lidar_calibration pcdTransfer.launch input_bag_path:="$(rospack find camera_lidar_calibration)/../../data/lidar/" output_pcd_path:="$(rospack find camera_lidar_calibration)/../../data/pcdFiles/" data_num:="1" 
 ```
 pcdファイルを開き、写真と同じ順序でポイントを選択します。shift+左クリックでポイントを選択できます。
 ```
